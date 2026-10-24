@@ -450,3 +450,13 @@ button:not(:disabled):active,.button:active,.mobile-nav a:active,.quick-start-in
 [data-theme=dark] .dhikr-card.is-complete,[data-theme=dark] .prayer-card.is-read{background:#172b21;border-color:#6f9e74;box-shadow:0 0 0 4px #6f9e741f}
 [data-theme=dark] .dhikr-card.is-complete::before,[data-theme=dark] .prayer-card.is-read::before{background:#8fbf8f;color:#0f2016}
 @keyframes done-pop{0%{transform:translateY(-100%);opacity:0}100%{transform:none;opacity:1}}
+
+/* ---------- Phone order: «صدقة جارية» art first, then the name, then the hadith ---------- */
+@media(max-width:540px){
+  .hero{display:flex;flex-direction:column}
+  .hero-grid{display:contents}
+  .hero-art{order:1;margin-top:26px}
+  .hero-copy{order:2;width:calc(100% - 36px);margin-inline:auto;padding-top:18px}
+  .memorial-hadith{order:3;border-bottom:0;border-top:1px solid #b8c5a530;margin-top:30px}
+  .hero-bottom{order:4}
+}
