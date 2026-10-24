@@ -1,12 +1,12 @@
 'use strict';
 // Anonymous tallies for the owner's private dashboard (dashboard.html).
 // Only numbers are sent: no names, accounts, IPs or device ids are stored.
-// While apiKey is empty nothing is sent and the site works exactly the same.
+// If apiKey is ever emptied, nothing is sent and the site works exactly the same.
 const STATS_FIREBASE = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  appId: '',
+  apiKey: 'AIzaSyC43BBmh8eQdmV8-pC0HmEKmhMHLAvW-C0',
+  authDomain: 'sadaqa-hisham.firebaseapp.com',
+  projectId: 'sadaqa-hisham',
+  appId: '1:170325037374:web:143f35511a14cb1fd3dc6f',
 };
 
 (() => {
