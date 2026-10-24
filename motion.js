@@ -29,8 +29,11 @@
   const selector = '.section-heading,.dua-heading,.dua-card,.dhikr-card,.surah-row,.quran-copy,.share-inner,.quick-start-inner>*,.category-tabs,.reading-toolbar';
   const io = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) return;
-    entry.target.classList.add('shown');
-    io.unobserve(entry.target);
+    const el = entry.target;
+    el.classList.add('shown');
+    io.unobserve(el);
+    // Hand the element back to its own styles once it has arrived, so button presses and hovers aren't delayed.
+    setTimeout(() => el.classList.remove('reveal', 'shown'), 1100);
   }), { rootMargin: '0px 0px -8% 0px' });
   const prepare = root => {
     const groups = new Map();
@@ -48,7 +51,7 @@
     // Lists re-rendered later (switching adhkar tabs) show right away, no waiting on scroll.
     new MutationObserver(records => records.forEach(r => r.addedNodes.forEach(node => {
       if (node.nodeType !== 1) return;
-      [node, ...node.querySelectorAll(selector)].forEach(el => { if (el.matches?.(selector)) el.classList.add('reveal', 'shown'); });
+      [node, ...node.querySelectorAll(selector)].forEach(el => { if (el.matches?.(selector)) el.classList.remove('reveal', 'shown'); });
     }))).observe(document.querySelector('main') || document.body, { childList: true, subtree: true });
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

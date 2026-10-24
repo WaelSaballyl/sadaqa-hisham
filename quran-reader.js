@@ -4,7 +4,7 @@
   const content = document.querySelector('#reader-content');
   const title = document.querySelector('#reader-title');
   const format = n => new Intl.NumberFormat('ar-u-nu-arab').format(n);
-  const quick = {fatiha:1, ikhlas:112, falaq:113, nas:114};
+  const quick = {fatiha:1, ikhlas:112, falaq:113, nas:114, baqarah:2};
   let bookPromise;
   let player;
   let request = 0;
@@ -98,7 +98,9 @@
         verses.append(element('span','verse-number','﴿'+format(index+1)+'﴾ '));
       });
       applySize();
-      const note = element('p','quran-reader-note',format(surah.ayahs.length)+' آيات · التلاوة تعمل عند الضغط على التشغيل وتحتاج الإنترنت.');
+      const n = surah.ayahs.length;
+      const ayahWord = n === 1 ? 'آية واحدة' : n === 2 ? 'آيتان' : format(n)+(n <= 10 ? ' آيات' : ' آية');
+      const note = element('p','quran-reader-note',ayahWord+' · التلاوة تعمل عند الضغط على التشغيل وتحتاج الإنترنت.');
       const source = element('a','reader-source','مصدر نص المصحف والتلاوة: Al Quran Cloud ↗');
       source.href = 'https://alquran.cloud/';
       source.target = '_blank';
