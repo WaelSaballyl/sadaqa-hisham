@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const $ = (s) => document.querySelector(s);
-  const number = (n) => new Intl.NumberFormat('ar').format(n);
+  const number = (n) => new Intl.NumberFormat('ar-u-nu-arab').format(n);
   const storageKey = 'sadaqah-dhikr-v1';
   const today = () => { const d = new Date(); return [d.getFullYear(),d.getMonth()+1,d.getDate()].join('-'); };
   let progress = {date:today(),counts:{}};

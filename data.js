@@ -10,7 +10,7 @@ const KURSI = 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْ
 const sayyid = {id:'sayyid',title:'سيد الاستغفار',text:'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',count:1,source:'صحيح البخاري (٦٣٠٦)',url:'https://sunnah.com/bukhari:6306'};
 const protection = {id:'protection',title:'بسم الله الذي لا يضرّ مع اسمه شيء',text:'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ، وَهُوَ السَّمِيعُ الْعَلِيمُ',count:3,source:'أبو داود (٥٠٨٨) · صحيح',url:'https://sunnah.com/abudawud:5088'};
 const praise = {id:'praise',title:'التسبيح والتحميد',text:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',count:100,source:'صحيح مسلم (٢٦٩٢)',url:'https://sunnah.com/muslim:2692'};
-const shortSurahs = ['ikhlas','falaq','nas'].map(key=>({id:key,title:'سورة '+SURAHS[key].name,text:SURAHS[key].verses.map((v,i)=>v+' ﴿'+new Intl.NumberFormat('ar').format(i+1)+'﴾').join(' '),count:3,source:'أبو داود (٥٠٨٢) · حسن الألباني',url:'https://sunnah.com/abudawud:5082',isQuran:true}));
+const shortSurahs = ['ikhlas','falaq','nas'].map(key=>({id:key,title:'سورة '+SURAHS[key].name,text:SURAHS[key].verses.map((v,i)=>v+' ﴿'+new Intl.NumberFormat('ar-u-nu-arab').format(i+1)+'﴾').join(' '),count:3,source:'أبو داود (٥٠٨٢) · حسن الألباني',url:'https://sunnah.com/abudawud:5082',isQuran:true}));
 const DHIKR = {
  morning:{description:'ابدأ صباحك بذكر الله',items:[sayyid,protection,...shortSurahs,praise]},
  evening:{description:'اختم نهارك بطمأنينة الذكر',items:[sayyid,protection,...shortSurahs,praise]},
@@ -22,13 +22,13 @@ const DHIKR = {
   {id:'tahmid',title:'التحميد',text:'الْحَمْدُ لِلَّهِ',count:33,source:'صحيح مسلم (٥٩٧)',url:'https://sunnah.com/muslim:597a'},
   {id:'takbir',title:'التكبير',text:'اللَّهُ أَكْبَرُ',count:33,source:'صحيح مسلم (٥٩٧)',url:'https://sunnah.com/muslim:597a'},
   {id:'hundred',title:'تمام المائة، بعد التسبيح والتحميد والتكبير',text:'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',count:1,source:'صحيح مسلم (٥٩٧)',url:'https://sunnah.com/muslim:597a'},
-  {id:'kursi',title:'آية الكرسي',text:KURSI,count:1,source:'البقرة: ٢٥٥ · دليل وقت القراءة',url:'https://binbaz.org.sa/fatwas/11594/فضل-قراءة-اية-الكرسي-عقب-الصلوات',isQuran:true}
+  {id:'kursi',title:'آية الكرسي',text:KURSI,count:1,source:'النسائي في الكبرى (٩٨٤٨) · صححه الألباني',url:'https://binbaz.org.sa/fatwas/11594/فضل-قراءة-اية-الكرسي-عقب-الصلوات',isQuran:true}
  ]},
  sleep:{description:'اذكر الله قبل أن تأوي إلى فراشك',items:[
   {id:'bismika',title:'باسمك اللهم',text:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',count:1,source:'صحيح البخاري (٦٣٢٤)',url:'https://sunnah.com/bukhari:6324'},
   {id:'side',title:'باسمك ربي وضعت جنبي',text:'بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، إِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ',count:1,source:'صحيح البخاري (٦٣٢٠)',url:'https://sunnah.com/bukhari:6320'},
-  {id:'kursi',title:'آية الكرسي',text:KURSI,count:1,source:'البقرة: ٢٥٥ · دليل وقت القراءة',url:'https://sunnah.com/bukhari:2311',isQuran:true},
-  ...['ikhlas','falaq','nas'].map(key=>({id:key,title:'سورة '+SURAHS[key].name,text:SURAHS[key].verses.map((v,i)=>v+' ﴿'+new Intl.NumberFormat('ar').format(i+1)+'﴾').join(' '),count:3,source:'صحيح البخاري (٥٠١٧)',url:'https://sunnah.com/bukhari:5017',isQuran:true})),
+  {id:'kursi',title:'آية الكرسي',text:KURSI,count:1,source:'صحيح البخاري (٢٣١١)',url:'https://sunnah.com/bukhari:2311',isQuran:true},
+  ...['ikhlas','falaq','nas'].map(key=>({id:key,title:'سورة '+SURAHS[key].name,text:SURAHS[key].verses.map((v,i)=>v+' ﴿'+new Intl.NumberFormat('ar-u-nu-arab').format(i+1)+'﴾').join(' '),count:3,source:'صحيح البخاري (٥٠١٧)',url:'https://sunnah.com/bukhari:5017',isQuran:true})),
   {id:'tasbih',title:'التسبيح قبل النوم',text:'سُبْحَانَ اللَّهِ',count:33,source:'صحيح مسلم (٢٧٢٧)',url:'https://sunnah.com/muslim:2727a'},
   {id:'tahmid',title:'التحميد قبل النوم',text:'الْحَمْدُ لِلَّهِ',count:33,source:'صحيح مسلم (٢٧٢٧)',url:'https://sunnah.com/muslim:2727a'},
   {id:'takbir',title:'التكبير قبل النوم',text:'اللَّهُ أَكْبَرُ',count:34,source:'صحيح مسلم (٢٧٢٧)',url:'https://sunnah.com/muslim:2727a'}
@@ -44,5 +44,5 @@ const DUAS = [
  {id:'living-dead',title:'المغفرة لأحيائنا وأمواتنا',text:'اللَّهُمَّ اغْفِرْ لِحَيِّنَا وَمَيِّتِنَا، وَصَغِيرِنَا وَكَبِيرِنَا، وَذَكَرِنَا وَأُنْثَانَا، وَشَاهِدِنَا وَغَائِبِنَا.',source:'من دعاء النبي ﷺ في صلاة الجنازة · أبو داود (٣٢٠١)، صححه الألباني',url:'https://sunnah.com/abudawud:3201'},
  {id:'merciful',title:'أنت الغفور الرحيم',text:'اللَّهُمَّ فَاغْفِرْ لَهُ وَارْحَمْهُ، إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ.',source:'من دعاء النبي ﷺ للميت · أبو داود (٣٢٠٢)، صححه الألباني',url:'https://sunnah.com/abudawud:3202'},
  {id:'reward-guidance',title:'الأجر والثبات لمن بقي',text:'اللَّهُمَّ لَا تَحْرِمْنَا أَجْرَهُ، وَلَا تُضِلَّنَا بَعْدَهُ.',source:'من دعاء النبي ﷺ في صلاة الجنازة · أبو داود (٣٢٠١)، صححه الألباني',url:'https://sunnah.com/abudawud:3201'},
- {id:'general',title:'دعاء لهشام سبع الليل',text:'اللَّهُمَّ اغْفِرْ لِهِشَام سَبْع اللَّيْل، وَارْحَمْهُ رَحْمَةً وَاسِعَةً، وَارْفَعْ دَرَجَتَهُ، وَأَسْكِنْهُ فَسِيحَ جَنَّاتِكَ، وَاغْفِرْ لَنَا وَلِجَمِيعِ مَوْتَى الْمُسْلِمِينَ.',source:'دعاء عام بالمغفرة والرحمة · غير منسوب إلى حديث',url:null}
+ {id:'general',title:'دعاء لهشام سبع الليل',text:'اللَّهُمَّ اغْفِرْ لِهشام سبع الليل، وَارْحَمْهُ رَحْمَةً وَاسِعَةً، وَارْفَعْ دَرَجَتَهُ، وَأَسْكِنْهُ فَسِيحَ جَنَّاتِكَ، وَاغْفِرْ لَنَا وَلِجَمِيعِ مَوْتَى الْمُسْلِمِينَ.',source:'دعاء عام بالمغفرة والرحمة · غير منسوب إلى حديث',url:null}
 ];

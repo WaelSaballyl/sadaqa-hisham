@@ -3,7 +3,7 @@
   const dialog = document.querySelector('#reader-dialog');
   const content = document.querySelector('#reader-content');
   const title = document.querySelector('#reader-title');
-  const format = n => new Intl.NumberFormat('ar').format(n);
+  const format = n => new Intl.NumberFormat('ar-u-nu-arab').format(n);
   const quick = {fatiha:1, ikhlas:112, falaq:113, nas:114};
   let bookPromise;
   let player;
@@ -91,6 +91,8 @@
       smaller.addEventListener('click',()=>{ size=Math.max(24,size-2);applySize(); });
       larger.addEventListener('click',()=>{ size=Math.min(44,size+2);applySize(); });
       sizeControls.append(sizeLabel,smaller,larger);
+      // The basmala opens every surah except at-Tawbah; in al-Fatiha it is verse 1 itself.
+      const basmala = current !== 1 && current !== 9 ? element('p','bismillah','بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ') : null;
       surah.ayahs.forEach((verse,index)=>{
         verses.append(document.createTextNode(verse+' '));
         verses.append(element('span','verse-number','﴿'+format(index+1)+'﴾ '));
@@ -101,7 +103,7 @@
       source.href = 'https://alquran.cloud/';
       source.target = '_blank';
       source.rel = 'noopener noreferrer';
-      content.replaceChildren(toolbar,audioBox,sizeControls,note,verses,source);
+      content.replaceChildren(toolbar,audioBox,sizeControls,note,...(basmala?[basmala]:[]),verses,source);
       content.scrollTop = 0;
       dialog.scrollTop = 0;
     } catch {
