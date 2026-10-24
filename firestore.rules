@@ -27,6 +27,7 @@ service cloud.firestore {
     function okCounters() {
       return request.resource.data.keys().hasOnly([
         'visits',
+        'visitors_unique',
         'people_amen',
         'people_dhikr',
         'people_quran',
@@ -72,6 +73,7 @@ service cloud.firestore {
         'shares'
       ])
         && ok('visits')
+        && ok('visitors_unique')
         && ok('people_amen')
         && ok('people_dhikr')
         && ok('people_quran')

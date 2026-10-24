@@ -37,6 +37,11 @@ const STATS_FIREBASE = {
   function schedule() { clearTimeout(timer); timer = setTimeout(flush, 1200); }
 
   once('visits');
+  // A device seen for the first time ever: counted once, then never again (unlike visits, which reset daily).
+  const everKey = 'sadaqah-stats-ever';
+  let ever = false;
+  try { ever = localStorage.getItem(everKey) === '1'; } catch {}
+  if (!ever) { sending.visitors_unique = 1; add('visitors_unique'); }
   document.addEventListener('sadaqa:count', ({ detail: d }) => {
     if (d.type === 'amen' && DUA_IDS.includes(d.id)) { add('amen_total'); add('amen_' + key(d.id)); once('people_amen'); }
     if (d.type === 'dhikr' && DHIKR_IDS.includes(d.id)) {
@@ -63,6 +68,7 @@ const STATS_FIREBASE = {
       b.set(fs.doc(store, 'stats', 'all'), inc, { merge: true });
       b.set(fs.doc(store, 'days', day), inc, { merge: true });
       await b.commit();
+      if (batch.visitors_unique) { try { localStorage.setItem(everKey, '1'); } catch {} }
       for (const f in batch) if (sending[f]) { seen[f] = 1; delete sending[f]; }
       try { localStorage.setItem(seenKey, JSON.stringify(seen)); } catch {}
     } catch {
