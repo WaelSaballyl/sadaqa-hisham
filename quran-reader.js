@@ -41,6 +41,7 @@
       current = Math.min(114,Math.max(1,number));
       const surah = book.surahs[current-1];
       title.textContent = surah.name;
+      document.dispatchEvent(new CustomEvent('sadaqa:count',{detail:{type:'surah',surah:current}}));
       try { localStorage.setItem('sadaqah-quran-surah-v1',String(current)); } catch {}
       const toolbar = element('div','quran-reader-toolbar');
       const label = element('label','','اختر السورة');
@@ -73,6 +74,7 @@
       const errorMessage = element('p','quran-audio-error');
       errorMessage.setAttribute('role','status');
       audio.addEventListener('error',()=>{ errorMessage.textContent = 'تعذّر تحميل التلاوة. تأكد من اتصال الإنترنت، ثم أعد فتح السورة للمحاولة.'; });
+      audio.addEventListener('play',()=>document.dispatchEvent(new CustomEvent('sadaqa:count',{detail:{type:'audio',surah:current}})),{once:true});
       player = audio;
       audioBox.append(audioTitle,audio,errorMessage);
       const sizeControls = element('div','quran-size-controls');

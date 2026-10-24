@@ -460,3 +460,19 @@ button:not(:disabled):active,.button:active,.mobile-nav a:active,.quick-start-in
   .memorial-hadith{order:3;border-bottom:0;border-top:1px solid #b8c5a530;margin-top:30px}
   .hero-bottom{order:4}
 }
+
+/* ---------- Phone header: share button with its label, same height as the theme switch ---------- */
+@media(max-width:540px){
+  .header-actions{display:flex;align-items:center;gap:8px}
+  .theme-switch{height:44px;padding:3px;align-items:stretch;box-sizing:border-box}
+  .theme-switch button{height:auto!important;min-height:0!important;width:44px;padding:0;display:grid;place-items:center}
+  .share-button{height:44px;min-height:44px;padding:0 12px;gap:7px;border-radius:8px;white-space:nowrap}
+  .share-button span{display:inline!important;font-size:14px;font-weight:600}
+  .share-button svg{width:18px!important;height:18px!important}
+}
+
+/* «الحاج» sits above the name: smaller, gold, spaced, so the name itself stays the hero */
+#hero-title .hajj{display:block;font-family:var(--body-font);font-size:.3em;font-weight:600;letter-spacing:.08em;color:var(--gold);line-height:1.4;margin-bottom:.15em}
+[data-theme] #hero-title .hajj{color:#d2b475}
+/* motion.js wraps the name's words in spans; keep «هشام» its own colour, not the gold of «سبع الليل» */
+#hero-title > .word{color:inherit}

@@ -1,0 +1,132 @@
+rules_version = '2';
+// Firestore rules for the private dashboard (dashboard.html).
+// Anyone may ADD to the known counters, in small steps only. Only the owner may READ.
+// Before publishing, replace OWNER_EMAIL with the Gmail that opens the dashboard.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner() {
+      return request.auth != null
+        && request.auth.token.email == 'OWNER_EMAIL'
+        && request.auth.token.email_verified == true;
+    }
+
+    function before(f) {
+      return resource == null || !(f in resource.data) ? 0 : resource.data[f];
+    }
+
+    // Untouched fields pass; a touched field must be a whole number that grew by 1..500.
+    function ok(f) {
+      return !(f in request.resource.data)
+        || request.resource.data[f] == before(f)
+        || (request.resource.data[f] is int
+            && request.resource.data[f] - before(f) >= 1
+            && request.resource.data[f] - before(f) <= 500);
+    }
+
+    function okCounters() {
+      return request.resource.data.keys().hasOnly([
+        'visits',
+        'people_amen',
+        'people_dhikr',
+        'people_quran',
+        'amen_total',
+        'amen_forgiveness',
+        'amen_purification',
+        'amen_paradise',
+        'amen_quran',
+        'amen_grave_light',
+        'amen_living_dead',
+        'amen_merciful',
+        'amen_reward_guidance',
+        'amen_general',
+        'taps_total',
+        'done_sayyid',
+        'done_protection',
+        'done_ikhlas',
+        'done_falaq',
+        'done_nas',
+        'done_praise',
+        'done_istighfar',
+        'done_salam',
+        'done_tahlil',
+        'done_tasbih',
+        'done_tahmid',
+        'done_takbir',
+        'done_hundred',
+        'done_kursi',
+        'done_bismika',
+        'done_side',
+        'cat_morning',
+        'cat_evening',
+        'cat_prayer',
+        'cat_sleep',
+        'surah_fatiha',
+        'surah_baqarah',
+        'surah_ikhlas',
+        'surah_falaq',
+        'surah_nas',
+        'surah_other',
+        'audio_total',
+        'installs',
+        'shares'
+      ])
+        && ok('visits')
+        && ok('people_amen')
+        && ok('people_dhikr')
+        && ok('people_quran')
+        && ok('amen_total')
+        && ok('amen_forgiveness')
+        && ok('amen_purification')
+        && ok('amen_paradise')
+        && ok('amen_quran')
+        && ok('amen_grave_light')
+        && ok('amen_living_dead')
+        && ok('amen_merciful')
+        && ok('amen_reward_guidance')
+        && ok('amen_general')
+        && ok('taps_total')
+        && ok('done_sayyid')
+        && ok('done_protection')
+        && ok('done_ikhlas')
+        && ok('done_falaq')
+        && ok('done_nas')
+        && ok('done_praise')
+        && ok('done_istighfar')
+        && ok('done_salam')
+        && ok('done_tahlil')
+        && ok('done_tasbih')
+        && ok('done_tahmid')
+        && ok('done_takbir')
+        && ok('done_hundred')
+        && ok('done_kursi')
+        && ok('done_bismika')
+        && ok('done_side')
+        && ok('cat_morning')
+        && ok('cat_evening')
+        && ok('cat_prayer')
+        && ok('cat_sleep')
+        && ok('surah_fatiha')
+        && ok('surah_baqarah')
+        && ok('surah_ikhlas')
+        && ok('surah_falaq')
+        && ok('surah_nas')
+        && ok('surah_other')
+        && ok('audio_total')
+        && ok('installs')
+        && ok('shares');
+    }
+
+    match /stats/{doc} {
+      allow read: if isOwner();
+      allow create, update: if doc == 'all' && okCounters();
+      allow delete: if false;
+    }
+
+    match /days/{day} {
+      allow read: if isOwner();
+      allow create, update: if day.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') && okCounters();
+      allow delete: if false;
+    }
+  }
+}

@@ -14,6 +14,8 @@
   const countFor = (item) => { const v = progress.counts[category + ':' + item.id]; return Number.isInteger(v) && v > 0 ? Math.min(v,item.count) : 0; };
   const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(progress)); } catch {} };
   function checkDate() { if (progress.date !== today()) { progress = {date:today(),counts:{}}; save(); render(); renderDuas(); return true; } return false; }
+  // Anonymous tallies for the owner's dashboard (stats.js listens; no personal data).
+  const count = (type,detail) => document.dispatchEvent(new CustomEvent('sadaqa:count',{detail:{type,...detail}}));
   function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('show'),3500); }
   function icon(name) { const el = document.createElementNS('http://www.w3.org/2000/svg','svg'); el.setAttribute('aria-hidden','true'); const use = document.createElementNS('http://www.w3.org/2000/svg','use'); use.setAttribute('href','#i-'+name); el.append(use); return el; }
   function updateProgress() {
@@ -41,6 +43,7 @@
     progress.category=category;
     progress.positions = {...progress.positions,[category]:item.id};
     save(); updateCounter(button,card,item); updateProgress(); tapFeedback(button);
+    count('dhikr',{id:item.id,category,done:countFor(item)===item.count});
     if(countFor(item)===item.count) toast('اكتمل عدّ '+item.title+'، تقبّل الله.');
   }
   function updateCounter(button,card,item) {
@@ -160,13 +163,19 @@
     const list=$('#dua-list');list.replaceChildren();
     DUAS.forEach(dua=>{
       const card=document.createElement('article');card.className='prayer-card'+(dua.id==='general'?' prayer-personal':'');card.dataset.duaId=dua.id;
-      const title=document.createElement('h3');title.textContent=dua.title;
+      const title=document.createElement('h3');title.textContent=dua.title+(dua.count>1?' ('+number(dua.count)+' مرات)':'');
       const text=document.createElement('p');text.className='prayer-text';text.textContent=dua.text;
       const source=document.createElement(dua.url?'a':'span');source.className='source-link';if(dua.url){source.href=dua.url;source.target='_blank';source.rel='noopener noreferrer';}source.textContent=dua.source+(dua.url?' ↗':'');
       const actions=document.createElement('div');actions.className='prayer-actions';
       const amen=document.createElement('button');amen.className='amen-button';
-      const updateAmen=()=>{const done=progress.amen?.[dua.id]===true;amen.replaceChildren(document.createTextNode('آمين'));if(done)amen.append(icon('check'));amen.setAttribute('aria-pressed',String(done));amen.setAttribute('aria-label',(done?'إزالة علامة القراءة: ':'حفظ علامة القراءة بعد الدعاء: ')+dua.title);card.classList.toggle('is-read',done);};updateAmen();
-      amen.addEventListener('click',()=>{if(checkDate())return;const done=progress.amen?.[dua.id]===true;progress.amen={...progress.amen,[dua.id]:!done};save();updateAmen();if(!done)toast('تقبّل الله دعاءك. حُفظت علامة القراءة لهذا اليوم.');});
+      const times=dua.count||1;const said=()=>times>1?Math.min(times,Number(progress.amenCount?.[dua.id])||0):(progress.amen?.[dua.id]===true?1:0);
+      const updateAmen=()=>{const done=said()>=times;amen.replaceChildren(document.createTextNode(times>1&&!done?'آمين ('+number(said())+' من '+number(times)+')':'آمين'));if(done)amen.append(icon('check'));amen.setAttribute('aria-pressed',String(done));amen.setAttribute('aria-label',(done?'إزالة علامة القراءة: ':'حفظ علامة القراءة بعد الدعاء: ')+dua.title);card.classList.toggle('is-read',done);};updateAmen();
+      amen.addEventListener('click',()=>{if(checkDate())return;const done=said()>=times;
+        // A dua said several times counts up to its number; pressing again once it is done clears it, like the single ones.
+        if(times>1)progress.amenCount={...progress.amenCount,[dua.id]:done?0:said()+1};
+        progress.amen={...progress.amen,[dua.id]:times>1?said()>=times:!done};save();updateAmen();
+        if(!done)count('amen',{id:dua.id});
+        if(!done&&said()>=times)toast('تقبّل الله دعاءك. حُفظت علامة القراءة لهذا اليوم.');});
       const copy=document.createElement('button');copy.className='prayer-copy';copy.append(icon('copy'),document.createTextNode('نسخ الدعاء'));copy.addEventListener('click',async()=>{const ok=await copyText(dua.text+'\n'+dua.source+(dua.url?'\n'+dua.url:''));toast(ok?'تم نسخ الدعاء مع مصدره.':'يمكنك تحديد نص الدعاء ونسخه.');});
       actions.append(amen,copy);card.append(title,text,source,actions);list.append(card);
     });

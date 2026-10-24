@@ -29,6 +29,7 @@
   window.addEventListener('appinstalled', () => {
     installPrompt = null;
     installedThisSession = true;
+    document.dispatchEvent(new CustomEvent('sadaqa:count',{detail:{type:'install'}}));
     update();
     const toast = document.querySelector('#toast');
     toast.textContent = 'تمت الإضافة، تلقاه في شاشة جوالك الرئيسية.';
