@@ -188,6 +188,17 @@
   $('#copy-link').addEventListener('click',async()=> { const ok=await copyText($('#share-url').value);if(ok){$('#share-dialog').close();toast('تم نسخ رابط الموقع.');}else{$('#share-url').select();toast('حدّد الرابط لنسخه يدويًا.');} });
   $('#sources-open').addEventListener('click',()=>showDialog($('#sources-dialog')));
   document.addEventListener('visibilitychange',()=> {if(!document.hidden)checkDate();});
+  // Bottom nav scrolls in code instead of relying on the browser's anchor jump, which some
+  // phones skip when a smooth scroll is still running. The tapped item lights up straight away.
+  document.querySelectorAll('.mobile-nav a').forEach(link=>link.addEventListener('click',event=> {
+    const target=$(link.getAttribute('href')); if(!target)return;
+    event.preventDefault();
+    const header=$('.site-header')?.offsetHeight||0;
+    const top=link.getAttribute('href')==='#main'?0:target.getBoundingClientRect().top+scrollY-header-8;
+    scrollTo({top,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    history.replaceState(null,'',link.getAttribute('href'));
+    document.querySelectorAll('.mobile-nav a').forEach(l=>{l.classList.toggle('is-active',l===link);if(l===link)l.setAttribute('aria-current','location');else l.removeAttribute('aria-current');});
+  }));
   if('IntersectionObserver' in window) {
     const links=[...document.querySelectorAll('.mobile-nav a')];
     const observer=new IntersectionObserver(entries=> {const active=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!active)return;const target=active.target.classList.contains('hero')?'#main':'#'+active.target.id;links.forEach(link=> {const current=link.getAttribute('href')===target;link.classList.toggle('is-active',current);if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});},{rootMargin:'-12% 0px -45% 0px',threshold:[0,.1,.3]});

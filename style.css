@@ -476,3 +476,8 @@ button:not(:disabled):active,.button:active,.mobile-nav a:active,.quick-start-in
 [data-theme] #hero-title .hajj{color:#d2b475}
 /* motion.js wraps the name's words in spans; keep «هشام» its own colour, not the gold of «سبع الليل» */
 #hero-title > .word{color:inherit}
+@media(max-width:379px){
+  .header-inner .brand{white-space:nowrap}
+  .share-button{width:44px;padding:0!important;justify-content:center;display:grid!important;place-items:center}
+  .share-button span{display:none!important}
+}
