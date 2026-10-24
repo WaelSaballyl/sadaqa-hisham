@@ -361,3 +361,32 @@ button, a { touch-action:manipulation; }
 .install-key{display:inline-grid;place-items:center;width:30px;height:30px;margin-inline:4px;vertical-align:middle;border:1px solid var(--line);border-radius:7px;background:var(--white);color:#2f7cf6}
 .install-key svg{width:18px!important;height:18px!important}
 #install-steps li{line-height:2}
+
+/* Keep the introduction centered independently of its text width. */
+.hero-description { display:grid; justify-items:center; gap:4px; width:100%; max-width:none; margin:0 auto; text-align:center; }
+.hero-description > span { display:block; width:100%; max-width:36ch; margin-inline:auto; text-align:center; text-wrap:pretty; }
+@media(max-width:540px) {
+  .hero-copy { display:flex; flex-direction:column; align-items:center; width:100%; }
+  .hero-description { width:100%; max-width:none; align-self:stretch; }
+  .hero-description > span { max-width:32ch; }
+  .hero-art { display:flex; width:min(300px,100%); height:330px; margin:30px auto 6px; }
+  .hero-art .arch-lines { width:100%; height:100%; max-width:300px; }
+  .hero-art .art-type { top:8px; }
+  .hero-art .sadaqah { font-size:68px; }
+  .hero-art .sadaqah > span { font-size:66px; }
+  .hero-art .art-top { font-size:16px; }
+  .hero-art .art-bottom { font-size:15px; }
+  .hero-actions { width:100%; }
+}
+@media(prefers-reduced-motion:no-preference) {
+  .arch-trace { animation:trace 22s linear infinite; }
+  .arch-glow { animation:breathe 9s ease-in-out infinite; }
+  .art-star { animation:twinkle 7s ease-in-out infinite; }
+  .art-star.star-two { animation-delay:-3s; }
+  .art-star.star-three { animation-delay:-5s; }
+  .sadaqah { animation:type-glow 9s ease-in-out infinite; }
+  .dua-icon > svg, .charity-icon > svg { animation:gentle-icon 8s ease-in-out infinite; transform-origin:center; }
+  .charity-icon > svg { animation-delay:-4s; }
+  .quick-icon > svg { animation:gentle-icon 10s ease-in-out infinite; }
+}
+@keyframes gentle-icon { 0%,70%,100% { transform:scale(1); } 80% { transform:scale(1.09); } 90% { transform:scale(1); } }
