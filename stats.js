@@ -27,13 +27,14 @@ const STATS_FIREBASE = {
 
   function add(field, n = 1) { pending[field] = (pending[field] || 0) + n; schedule(); }
   // A "person" is counted once per day per device for each kind of action.
+  // It is remembered only after the number reached the database, so a visit cut short is counted next time.
+  const sending = {};
   function once(field) {
-    if (seen[field]) return;
-    seen[field] = 1;
-    try { localStorage.setItem(seenKey, JSON.stringify(seen)); } catch {}
+    if (seen[field] || sending[field]) return;
+    sending[field] = 1;
     add(field);
   }
-  function schedule() { clearTimeout(timer); timer = setTimeout(flush, 2500); }
+  function schedule() { clearTimeout(timer); timer = setTimeout(flush, 1200); }
 
   once('visits');
   document.addEventListener('sadaqa:count', ({ detail: d }) => {
@@ -62,6 +63,8 @@ const STATS_FIREBASE = {
       b.set(fs.doc(store, 'stats', 'all'), inc, { merge: true });
       b.set(fs.doc(store, 'days', day), inc, { merge: true });
       await b.commit();
+      for (const f in batch) if (sending[f]) { seen[f] = 1; delete sending[f]; }
+      try { localStorage.setItem(seenKey, JSON.stringify(seen)); } catch {}
     } catch {
       db = null;
       for (const f in batch) pending[f] = (pending[f] || 0) + batch[f];
@@ -76,4 +79,5 @@ const STATS_FIREBASE = {
   }
   // Send what's left when the person leaves or switches app.
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  addEventListener('pagehide', flush);
 })();
