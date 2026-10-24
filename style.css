@@ -438,3 +438,15 @@ button:not(:disabled):active,.button:active,.mobile-nav a:active,.quick-start-in
 [data-theme=dark] .tool-button,[data-theme=dark] .theme-switch,[data-theme=dark] .share-button{border-color:#2f3d36}
 [data-theme=dark] .theme-switch button[aria-pressed=true]{background:#24342d;color:#ecdcb4}
 [data-theme=dark] .section-kicker{color:#cdb47a}
+
+/* ---------- Finished state: a card you completed (or said آمين on) is unmistakable ---------- */
+.dhikr-card,.prayer-card{position:relative}
+.dhikr-card.is-complete,.prayer-card.is-read{background:#eaf3e2;border:2px solid #5d8a59;box-shadow:0 0 0 4px #5d8a5918}
+.dhikr-card.is-complete,.prayer-card.is-read{padding-top:60px!important}
+.dhikr-card.is-complete::before,.prayer-card.is-read::before{position:absolute;top:0;left:0;right:0;z-index:2;padding:7px 16px;background:#3f7a47;color:#fff;font-size:15px;font-weight:600;line-height:1.6;text-align:center;animation:done-pop .45s cubic-bezier(.2,.8,.2,1)}
+.dhikr-card.is-complete::before{content:'✓ تمّت'}
+.prayer-card.is-read::before{content:'✓ دعوتَ له'}
+.prayer-card.is-read h3:after{display:none}
+[data-theme=dark] .dhikr-card.is-complete,[data-theme=dark] .prayer-card.is-read{background:#172b21;border-color:#6f9e74;box-shadow:0 0 0 4px #6f9e741f}
+[data-theme=dark] .dhikr-card.is-complete::before,[data-theme=dark] .prayer-card.is-read::before{background:#8fbf8f;color:#0f2016}
+@keyframes done-pop{0%{transform:translateY(-100%);opacity:0}100%{transform:none;opacity:1}}
