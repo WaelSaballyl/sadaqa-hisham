@@ -357,3 +357,7 @@ button, a { touch-action:manipulation; }
   .explore-tools { justify-content:flex-start; }
   .explore-tools .focus-open { flex:none; min-width:150px; }
 }
+
+.install-key{display:inline-grid;place-items:center;width:30px;height:30px;margin-inline:4px;vertical-align:middle;border:1px solid var(--line);border-radius:7px;background:var(--white);color:#2f7cf6}
+.install-key svg{width:18px!important;height:18px!important}
+#install-steps li{line-height:2}

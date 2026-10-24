@@ -1,6 +1,6 @@
 'use strict';
 const CACHE = 'hisham-static-20261024-1';
-const FILES = ['./','index.html','style.css?v=quran-simple-20261024','app.js?v=quran-simple-20261024','data.js?v=quran-simple-20261024','quran-reader.js?v=quran-simple-20261024','theme.js?v=appearance-1','install.js?v=native-install-3','manifest.webmanifest','assets/mark.svg','assets/app-icon-192.png','assets/app-icon-512.png','assets/amiri.ttf','assets/noto-arabic.ttf','assets/noto-arabic-600.ttf'];
+const FILES = ['./','index.html','style.css?v=quran-simple-20261024','app.js?v=quran-simple-20261024','data.js?v=quran-simple-20261024','quran-reader.js?v=quran-simple-20261024','theme.js?v=appearance-1','install.js?v=install-steps-2','manifest.webmanifest','assets/mark.svg','assets/app-icon-192.png','assets/app-icon-512.png','assets/amiri.ttf','assets/noto-arabic.ttf','assets/noto-arabic-600.ttf'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('hisham-static-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
