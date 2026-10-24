@@ -324,3 +324,36 @@ button, a { touch-action:manipulation; }
 .font-controls output { min-width:44px; font-size:12px; }
 .reading-actions { flex-wrap:wrap; }
 @media(max-width:540px) { .reading-actions { justify-content:center; } .reading-actions > #reset-progress { margin-inline:auto; } }
+
+/* Quran reader stays inside the site; streaming starts only on request. */
+#reader-dialog { width:min(860px,calc(100% - 24px)); }
+#reader-content { min-width:0; }
+.quran-reader-toolbar { display:grid; gap:10px; margin-bottom:18px; }
+.quran-reader-toolbar label { font-size:14px; color:var(--muted); }
+.quran-reader-toolbar select { width:100%; min-height:50px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:var(--white); font:16px var(--body-font); }
+.quran-reader-navigation { display:flex; gap:10px; }
+.quran-reader-navigation button, .quran-size-controls button { min-height:44px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:var(--green-soft); color:var(--ink); font:13px var(--body-font); }
+.quran-reader-navigation button { flex:1; }
+.quran-reader-navigation button:disabled, .quran-size-controls button:disabled { opacity:.4; }
+.quran-audio-player { padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--green-soft); margin-bottom:16px; }
+.quran-audio-player p { font-size:13px; margin-bottom:10px; color:var(--ink); }
+.quran-audio-player audio { width:100%; display:block; min-width:0; }
+.quran-audio-player .quran-audio-error { color:var(--muted); margin:8px 0 0; }
+.quran-size-controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:14px; }
+.quran-size-controls > span { width:100%; font-size:13px; color:var(--muted); }
+.quran-size-controls button { flex:1; }
+.quran-reader-note, .quran-message { color:var(--muted); font-size:13px; line-height:1.9; margin-bottom:20px; }
+.quran-full-text { color:var(--ink); text-align:start; line-height:2.25; overflow-wrap:break-word; }
+.quran-full-text .verse-number { white-space:nowrap; }
+.hero-description { margin-inline:auto; }
+@media(max-width:540px) {
+  .hero-description { width:100%; max-width:32ch; margin-inline:auto; text-align:center; text-wrap:pretty; }
+  .hero-description br { display:none; }
+  .hero-grid, .hero-copy { min-width:0; }
+  #reader-content { padding:20px 16px; }
+  .surah-row { gap:10px; }
+  .surah-open { gap:6px; font-size:12px; }
+  .quran-audio-player { padding:12px; }
+  .explore-tools { justify-content:flex-start; }
+  .explore-tools .focus-open { flex:none; min-width:150px; }
+}

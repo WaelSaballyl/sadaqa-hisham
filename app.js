@@ -7,14 +7,9 @@
   let progress = {date:today(),counts:{}};
   let category = 'morning';
   let toastTimer;
-  let query = '';
-  let favoritesOnly = false;
-  let favorites = new Set();
   let focusItems = [];
   let focusIndex = 0;
   const categoryNames = {morning:'أذكار الصباح',evening:'أذكار المساء',prayer:'أذكار بعد الصلاة',sleep:'أذكار النوم'};
-  const normalize = text => text.normalize('NFKD').replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06ed\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').toLowerCase().trim();
-  try { const stored = JSON.parse(localStorage.getItem('sadaqah-favorites-v1')); if (Array.isArray(stored)) favorites = new Set(stored.filter(x=>typeof x==='string')); } catch {}
   try { const stored = JSON.parse(localStorage.getItem(storageKey)); if (stored?.date === today() && stored.counts && typeof stored.counts === 'object' && !Array.isArray(stored.counts)) progress = stored; } catch {}
   const countFor = (item) => { const v = progress.counts[category + ':' + item.id]; return Number.isInteger(v) && v > 0 ? Math.min(v,item.count) : 0; };
   const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(progress)); } catch {} };
@@ -39,15 +34,7 @@
     $('#resume-title').textContent = (Object.keys(progress.counts).length || Object.keys(progress.positions || {}).length ? 'تابع ' : 'ابدأ ') + categoryNames[selected];
     $('#resume-detail').textContent = complete ? number(complete)+' من '+number(items.length)+' أذكار مكتملة اليوم' : 'قراءة هادئة، ذكرًا بعد ذكر';
   }
-  function visibleItems() {
-    const terms = normalize(query).split(/\s+/).filter(Boolean);
-    return DHIKR[category].items.filter(item => (!favoritesOnly || favorites.has(category+':'+item.id)) && terms.every(term=>normalize(item.title+' '+item.text).includes(term)));
-  }
-  function updateFavoritesCount() {
-    const n = DHIKR[category].items.filter(item=>favorites.has(category+':'+item.id)).length;
-    $('#favorites-count').textContent = number(n);
-    $('#favorites-toggle').setAttribute('aria-pressed',String(favoritesOnly));
-  }
+  function visibleItems() { return DHIKR[category].items; }
   function increment(item,button,card) {
     if(checkDate()) { if($('#focus-dialog').open) $('#focus-dialog').close(); return; }
     progress.counts[category+':'+item.id] = Math.min(item.count,countFor(item)+1);
@@ -87,22 +74,13 @@
     instructions.textContent = category==='sleep' ? 'عند قراءة الإخلاص والفلق والناس: اجمع كفّيك، وانفث فيهما، واقرأ، ثم امسح ما استطعت من جسدك؛ وافعل ذلك ثلاث مرات. المصدر: صحيح البخاري (٥٠١٧).' : category==='prayer' ? 'هذه الأذكار بعد كل صلاة مفروضة. استخدم «إعادة العدّ» قبل البدء بعد الصلاة التالية.' : '';
     $('#dhikr-panel').setAttribute('aria-labelledby','tab-'+category);
     const items = visibleItems();
-    $('#dhikr-empty').hidden = items.length > 0;
-    $('#empty-message').textContent = favoritesOnly ? 'أضف أذكارًا إلى المفضلة من علامة الحفظ، أو غيّر كلمة البحث.' : 'جرّب كلمة أخرى، مثل «الاستغفار» أو «الصمد».';
-    $('#search-result-status').textContent = query || favoritesOnly ? number(items.length)+' أذكار مطابقة في هذا القسم' : '';
-    updateFavoritesCount();
     items.forEach(item => {
       const card = document.createElement('article'); card.className='dhikr-card';
       const top = document.createElement('div'); top.className='dhikr-card-top';
       const title = document.createElement('h3'); title.textContent=item.title;
       const tag = document.createElement('span'); tag.className='dhikr-tag'; tag.textContent=item.count===1?'مرة واحدة':number(item.count)+(item.count<=10?' مرات':' مرة');
       const tools = document.createElement('div'); tools.className='dhikr-card-tools';
-      const bookmark = document.createElement('button'); bookmark.className='bookmark-button';
-      const key = category+':'+item.id;
-      function bookmarkState() { const active=favorites.has(key); bookmark.setAttribute('aria-pressed',String(active)); bookmark.setAttribute('aria-label',(active?'إزالة من المفضلة: ':'حفظ في المفضلة: ')+item.title); }
-      bookmark.append(icon('bookmark')); bookmarkState();
-      bookmark.addEventListener('click',()=> { const active=favorites.has(key); active?favorites.delete(key):favorites.add(key); try{localStorage.setItem('sadaqah-favorites-v1',JSON.stringify([...favorites]));}catch{} bookmarkState(); updateFavoritesCount(); if(favoritesOnly)render(); toast(active?'أُزيل الذكر من المفضلة.':'حُفظ الذكر في المفضلة على هذا الجهاز.'); });
-      tools.append(tag,bookmark); top.append(title,tools);
+      tools.append(tag); top.append(title,tools);
       const text = document.createElement('p'); text.className='dhikr-text'; text.textContent=item.text;
       const foot = document.createElement('div'); foot.className='dhikr-foot';
       const source = document.createElement('a'); source.className='source-link'; source.href=item.url; source.target='_blank'; source.rel='noopener noreferrer'; source.textContent=item.source+' ↗'; source.setAttribute('aria-label','مصدر '+item.title+': '+item.source+'، في نافذة جديدة');
@@ -115,7 +93,6 @@
   const tabs = [...document.querySelectorAll('[data-category]')];
   function selectCategory(button) {
     checkDate(); category=button.dataset.category;
-    query=''; $('#dhikr-search').value=''; $('#clear-search').hidden=true;
     progress.category=category; save();
     tabs.forEach(t=> { const active=t===button; t.setAttribute('aria-selected',String(active)); t.tabIndex=active?0:-1; });
     render();
@@ -131,11 +108,6 @@
       if(next!==undefined){event.preventDefault();selectCategory(tabs[next]);tabs[next].focus();}
     });
   });
-  $('#dhikr-search').addEventListener('input',event=> {query=event.target.value;$('#clear-search').hidden=!query;render();});
-  $('#clear-search').addEventListener('click',()=> {query='';$('#dhikr-search').value='';$('#clear-search').hidden=true;render();$('#dhikr-search').focus();});
-  $('#favorites-toggle').addEventListener('click',()=> {favoritesOnly=!favoritesOnly;render();});
-  function clearFilters() {query='';favoritesOnly=false;$('#dhikr-search').value='';$('#clear-search').hidden=true;render();}
-  $('#clear-filters').addEventListener('click',clearFilters);
   function renderFocus() {
     const item=focusItems[focusIndex]; if(!item) return;
     $('#focus-category').textContent=categoryNames[category];
@@ -150,7 +122,7 @@
   }
   function openFocus() {
     checkDate(); focusItems=visibleItems();
-    if(!focusItems.length){toast('اختر أذكارًا للقراءة أو ألغِ عوامل البحث.');return;}
+    if(!focusItems.length){toast('لا توجد أذكار للقراءة في هذا القسم.');return;}
     const savedId=progress.positions?.[category];
     const savedIndex=focusItems.findIndex(item=>item.id===savedId && countFor(item)<item.count);
     focusIndex=savedIndex>=0?savedIndex:Math.max(0,focusItems.findIndex(item=>countFor(item)<item.count));
@@ -166,7 +138,7 @@
   $('#focus-next').addEventListener('click',()=> {if(focusIndex<focusItems.length-1){focusIndex++;renderFocus();}else{$('#focus-dialog').close();toast('تقبّل الله ذكرك ودعاءك.');}});
   $('#resume-reading').addEventListener('click',()=> {
     checkDate();const savedCategory=DHIKR[progress.category]?progress.category:'morning';
-    favoritesOnly=false;selectCategory($('#tab-'+savedCategory));openFocus();
+    selectCategory($('#tab-'+savedCategory));openFocus();
   });
   $('#reset-progress').addEventListener('click',()=> {
     if (!DHIKR[category].items.some(i=>countFor(i)>0)) { toast('العدّادات في هذا القسم على الصفر بالفعل.'); return; }
@@ -184,15 +156,6 @@
     dialog.querySelector('.close-dialog').addEventListener('click',()=>dialog.close());
     dialog.addEventListener('click',event=> { const rect=dialog.getBoundingClientRect(); if(event.target===dialog && (event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom))dialog.close(); });
   });
-  document.querySelectorAll('[data-surah]').forEach(button=>button.addEventListener('click',()=> {
-    const surah=SURAHS[button.dataset.surah]; $('#reader-title').textContent='سورة '+surah.name;
-    const content=$('#reader-content'); content.replaceChildren();
-    if(surah.number!==1){const basmala=document.createElement('p');basmala.className='bismillah';basmala.textContent='بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';content.append(basmala);}
-    const verses=document.createElement('p'); verses.className='surah-text';
-    surah.verses.forEach((text,i)=> { verses.append(document.createTextNode(text+' '));const n=document.createElement('span');n.className='verse-number';n.textContent='﴿'+number(i+1)+'﴾ ';verses.append(n); });
-    const link=document.createElement('a');link.className='reader-source';link.href='https://quran.com/ar/'+surah.number;link.target='_blank';link.rel='noopener noreferrer';link.textContent='اقرأ السورة مع التفسير على Quran.com ↗';
-    content.append(verses,link); showDialog($('#reader-dialog'));
-  }));
   function renderDuas() {
     const list=$('#dua-list');list.replaceChildren();
     DUAS.forEach(dua=>{
