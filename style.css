@@ -324,3 +324,6 @@ button, a { touch-action:manipulation; }
 .font-controls output { min-width:44px; font-size:12px; }
 .reading-actions { flex-wrap:wrap; }
 @media(max-width:540px) { .reading-actions { justify-content:center; } .reading-actions > #reset-progress { margin-inline:auto; } }
+.install-key{display:inline-grid;place-items:center;width:30px;height:30px;margin-inline:4px;vertical-align:middle;border:1px solid var(--line);border-radius:7px;background:var(--white);color:#2f7cf6}
+.install-key svg{width:18px!important;height:18px!important}
+#install-steps li{line-height:2}
